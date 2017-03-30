@@ -3,7 +3,6 @@ var mosca = require('mosca');
 var mongo_con = 'mongodb://localhost:27017/mqtt';
 
 var ascoltatore = {
-    //using ascoltatore
     type: 'mongo',
     url: mongo_con,
     pubsubCollection: 'ascoltatori',
