@@ -40,7 +40,8 @@
     btnConnect.addEventListener('click', function(e) {
       e.preventDefault();
 
-      client  = mqtt.connect('ws://mqtt.tk:3000/mqtt', {
+      client && client.end();
+      client = mqtt.connect('ws://mqtt.tk:3000/mqtt', {
         clean: false,
         clientId: inputUsername.value ? inputUsername.value : rndUsername
       });
