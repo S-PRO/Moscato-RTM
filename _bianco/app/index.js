@@ -5,7 +5,7 @@ var client  = mqtt.connect('mqtt://localhost', {
 });
 
 client.on('connect', function () {
-	client.subscribe('/hello/s-pro', {qos: 1});
+  client.subscribe('/hello/s-pro', {qos: 1});
   client.publish('/hello/s-pro', 'Hello, S-PRO!', 1);
 });
 

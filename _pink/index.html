@@ -4,19 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style type="text/css">
+      .form-style-6{
+          font: 95% Arial, Helvetica, sans-serif;
+          max-width: 400px;
+          margin: 0px auto;
+          padding: 10px;
+          background: #F7F7F7;
+      }
+      .form-style-6 h1{
+          background: #43D1AF;
+          padding: 10px 0;
+          font-size: 120%;
+          font-weight: 300;
+          text-align: center;
+          color: #fff;
+          margin: -10px -10px 10px -10px;
+      }
+      .form-style-6 input[type="text"],
+      .form-style-6 input[type="date"],
+      .form-style-6 input[type="datetime"],
+      .form-style-6 input[type="email"],
+      .form-style-6 input[type="number"],
+      .form-style-6 input[type="search"],
+      .form-style-6 input[type="time"],
+      .form-style-6 input[type="url"],
+      .form-style-6 textarea,
+      .form-style-6 select
+      {
+          -webkit-transition: all 0.30s ease-in-out;
+          -moz-transition: all 0.30s ease-in-out;
+          -ms-transition: all 0.30s ease-in-out;
+          -o-transition: all 0.30s ease-in-out;
+          outline: none;
+          box-sizing: border-box;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          width: 100%;
+          background: #fff;
+          margin-bottom: 4%;
+          border: 1px solid #ccc;
+          padding: 3%;
+          color: #555;
+          font: 95% Arial, Helvetica, sans-serif;
+      }
+      .form-style-6 input[type="text"]:focus,
+      .form-style-6 input[type="date"]:focus,
+      .form-style-6 input[type="datetime"]:focus,
+      .form-style-6 input[type="email"]:focus,
+      .form-style-6 input[type="number"]:focus,
+      .form-style-6 input[type="search"]:focus,
+      .form-style-6 input[type="time"]:focus,
+      .form-style-6 input[type="url"]:focus,
+      .form-style-6 textarea:focus,
+      .form-style-6 select:focus
+      {
+          box-shadow: 0 0 5px #43D1AF;
+          padding: 3%;
+          border: 1px solid #43D1AF;
+      }
+
+      .form-style-6 input[type="submit"],
+      .form-style-6 input[type="button"]{
+          box-sizing: border-box;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          width: 100%;
+          padding: 3%;
+          background: #43D1AF;
+          border-bottom: 2px solid #30C29E;
+          border-top-style: none;
+          border-right-style: none;
+          border-left-style: none;
+          color: #fff;
+      }
+      .form-style-6 input[type="submit"]:hover,
+      .form-style-6 input[type="button"]:hover{
+          background: #2EBC99;
+          display: inline;
+      }
+      .form-style-6 input.btn-connect{
+          width: 49%;
+          margin-right: 2%;
+          float: left;
+      }
+      .form-style-6 input.btn-disconnect{
+          width: 49%;
+          float: left;
+      }
+      .clear {
+        clear: both;
+      }
+      .form-style-6 input.input-message{
+          width: 80%;
+          margin-right: 2%;
+          float: left;
+          line-height: 20px;
+      }
+      .form-style-6 input.btn-publish{
+          width: 18%;
+          float: left;
+          line-height: 20px;
+      }
+      p {
+        font: 95% Arial, Helvetica, sans-serif;
+        max-width: 400px;
+        margin: 0px auto;
+        padding: 10px;
+
+        font: 95% Arial, Helvetica, sans-serif;
+        margin: 0px 10px;
+      }
+      .messages {
+        margin-top: 10px;
+      }
+      </style>
   </head>
   <body>
 
-    <form class="" action="" method="post">
-      Name: <input type="text" name="username" value="" class="input-username" size="10" />
-      <input type="submit" name="connect" value="Connect" class="btn-connect" />
-      <input type="button" name="disconnect" value="Disconnect" class="btn-disconnect" /><br /><br />
+    <div class="form-style-6">
+    <h1>MQTT Chat</h1>
+    <form>
+    <input type="text" name="username" value="" class="input-username" placeholder="Your Name" />
+    <input type="submit" name="connect" value="Connect" class="btn-connect" />
+    <input type="button" name="disconnect" value="Disconnect" class="btn-disconnect" />
+    <div class="clear"></div>
     </form>
+    </div>
 
-    <form class="" action="" method="post">
-      Message: <input type="text" name="message" value="" class="input-message" />
-      <input type="submit" name="publish" value="Publish" class="btn-publish" /><br /><br />
+    <div class="form-style-6">
+    <form>
+    <input type="text" name="message" value="" class="input-message" placeholder="Message" />
+    <input type="submit" name="publish" value="Publish" class="btn-publish" />
+    <div class="clear"></div>
     </form>
+    </div>
+
     <div class="messages"></div>
 
   <script type="text/javascript">
@@ -40,32 +163,38 @@
     btnConnect.addEventListener('click', function(e) {
       e.preventDefault();
 
-      client && client.end();
-      client = mqtt.connect('ws://mqtt.tk:3000/mqtt', {
-        clean: false,
-        clientId: inputUsername.value ? inputUsername.value : rndUsername
-      });
+      if (!client || !client.connected) {
+        var username = inputUsername.value ? inputUsername.value : rndUsername;
 
-      client.on('connect', function () {
-        appendMessage('connection opened :)');
-      	client.subscribe('/hello/s-pro', {qos: 1});
-        client.publish('/hello/s-pro', 'Hello, S-PRO!', 1);
-      });
+        client = mqtt.connect('ws://mqtt.tk:3000/mqtt', {
+          clean: false,
+          clientId: username
+        });
 
-      client.on('message', function (topic, message) {
-        appendMessage(message);
-      });
+        client.on('connect', function () {
+          appendMessage('connection opened :)');
+          client.subscribe('/hello/s-pro', {qos: 1});
+          client.publish('/hello/s-pro', username + ': Hello, S-PRO!', 1);
+        });
+
+        client.on('message', function (topic, message) {
+          appendMessage(message);
+        });
+      }
     });
 
     btnDisconnect.addEventListener('click', function(e) {
       e.preventDefault();
-      client && client.end();
-      appendMessage('connection closed :(');
+      if (client && client.connected) {
+        client.end();
+        appendMessage('connection closed :(');
+      }
     });
 
     btnPublish.addEventListener('click', function(e) {
       e.preventDefault();
-      client && client.publish('/hello/s-pro', (inputUsername.value ? inputUsername.value : rndUsername) + ': ' + inputMessage.value, 1);
+      var username = inputUsername.value ? inputUsername.value : rndUsername;
+      client && client.publish('/hello/s-pro', username + ': ' + inputMessage.value, 1);
       inputMessage.value = '';
     });
 
