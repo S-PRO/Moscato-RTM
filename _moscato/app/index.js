@@ -46,19 +46,19 @@ mqttServ.on('published', function(packet, client) {
 function ready() {
   logger('Mosca server is up and running');
 
-  for (let i=0; i<1000; i++) {
-    setTimeout(function() {
-
-      var message = {
-        topic: '/hello/s-pro',
-        payload: new Buffer('Message #' + i),
-        qos: 1,
-        retain: false
-      };
-      mqttServ.publish(message, function() {
-      });
-
-    }, 3000 * i);
-  }
+  // for (let i=0; i<1000; i++) {
+  //   setTimeout(function() {
+  //
+  //     var message = {
+  //       topic: '/hello/s-pro',
+  //       payload: new Buffer('Message #' + i),
+  //       qos: 1,
+  //       retain: false
+  //     };
+  //     mqttServ.publish(message, function() {
+  //     });
+  //
+  //   }, 3000 * i);
+  // }
 
 }

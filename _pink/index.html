@@ -6,13 +6,17 @@
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   </head>
   <body>
-    Name: <input type="text" name="username" value="" class="input-username" />
-    <input type="button" name="connect" value="Connect" class="btn-connect" />
-    <input type="button" name="disconnect" value="Disconnect" class="btn-disconnect" /><br /><br />
 
-    Message: <input type="text" name="message" value="" class="input-message" />
-    <input type="button" name="publish" value="Publish" class="btn-publish" /><br /><br />
+    <form class="" action="" method="post">
+      Name: <input type="text" name="username" value="" class="input-username" size="10" />
+      <input type="submit" name="connect" value="Connect" class="btn-connect" />
+      <input type="button" name="disconnect" value="Disconnect" class="btn-disconnect" /><br /><br />
+    </form>
 
+    <form class="" action="" method="post">
+      Message: <input type="text" name="message" value="" class="input-message" />
+      <input type="submit" name="publish" value="Publish" class="btn-publish" /><br /><br />
+    </form>
     <div class="messages"></div>
 
   <script type="text/javascript">
