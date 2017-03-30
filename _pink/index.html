@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  </head>
+  <body>
+    Name: <input type="text" name="username" value="" class="input-username" />
+    <input type="button" name="connect" value="Connect" class="btn-connect" />
+    <input type="button" name="disconnect" value="Disconnect" class="btn-disconnect" /><br /><br />
+
+    Message: <input type="text" name="message" value="" class="input-message" />
+    <input type="button" name="publish" value="Publish" class="btn-publish" /><br /><br />
+
+    <div class="messages"></div>
+
+  <script type="text/javascript">
+  (function() {
+    'use strict';
+
+    var btnConnect = document.querySelector('.btn-connect');
+    var btnDisconnect = document.querySelector('.btn-disconnect');
+    var btnPublish = document.querySelector('.btn-publish');
+
+    var inputUsername = document.querySelector('.input-username');
+    var inputMessage = document.querySelector('.input-message');
+
+    var rndUsername = Math.random().toString(36).substr(2, 4);
+    inputUsername.value = rndUsername
+
+    var messages = document.querySelector('.messages');
+
+    var client, appendMessage;
+
+    btnConnect.addEventListener('click', function(e) {
+      e.preventDefault();
+
+      client  = mqtt.connect('ws://mqtt.tk:3000/mqtt', {
+        clean: false,
+        clientId: inputUsername.value ? inputUsername.value : rndUsername
+      });
+
+      client.on('connect', function () {
+        appendMessage('connection opened :)');
+      	client.subscribe('/hello/s-pro', {qos: 1});
+        client.publish('/hello/s-pro', 'Hello, S-PRO!', 1);
+      });
+
+      client.on('message', function (topic, message) {
+        appendMessage(message);
+      });
+    });
+
+    btnDisconnect.addEventListener('click', function(e) {
+      e.preventDefault();
+      client && client.end();
+      appendMessage('connection closed :(');
+    });
+
+    btnPublish.addEventListener('click', function(e) {
+      e.preventDefault();
+      client && client.publish('/hello/s-pro', (inputUsername.value ? inputUsername.value : rndUsername) + ': ' + inputMessage.value, 1);
+      inputMessage.value = '';
+    });
+
+    appendMessage = function(message) {
+      var element = document.createElement('p');
+      var string = document.createTextNode(message);
+      element.appendChild(string);
+      messages.insertBefore(element, messages.firstChild)
+    }
+  })();
+  </script>
+  </body>
+</html>
